@@ -1,5 +1,5 @@
 // iir_filter.c
-#include "iir_filter.h"
+#include "iir_filter_fixedpoint.h"
 
 #define MWSPT_NSEC 7
 #define MAX_SECTIONS 3
