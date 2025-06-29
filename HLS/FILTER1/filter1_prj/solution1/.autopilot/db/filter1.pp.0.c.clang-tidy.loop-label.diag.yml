@@ -1,0 +1,13 @@
+---
+MainSourceFile:  /home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER1/filter1_prj/solution1/.autopilot/db/filter1.pp.0.c
+Diagnostics:     
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_44_1:  '
+    FileOffset:      44
+    FilePath:        filter1.c
+    Replacements:    
+      - FilePath:        /home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER1/filter1_prj/solution1/.autopilot/db/filter1.pp.0.c
+        Offset:          13062
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_44_1: '
+...

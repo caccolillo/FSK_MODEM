@@ -1,0 +1,15 @@
+<xilinx:hls_fe_msgs>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER1/filter1_prj/solution1/csynth.tcl:15:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaContext="directive" ARG_PragmaFunction="filter1" ARG_PragmaIsValid="1" ARG_PragmaOptions="name=filter1" ARG_PragmaType="top" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="filter1.c:51:0" msg_body="Inlining function 'mult32' into 'process_biquad'">
+        <args Callee="mult32" Caller="process_biquad"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="filter1.c:64:0" msg_body="Inlining function 'mult32' into 'filter1'">
+        <args Callee="mult32" Caller="filter1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="filter1.c:64:0" msg_body="Inlining function 'process_biquad' into 'filter1'">
+        <args Callee="process_biquad" Caller="filter1"/>
+    </msg>
+</xilinx:hls_fe_msgs>
+

@@ -1,0 +1,53 @@
+INFO: [HLS 200-10] Running '/home/caccolillo/Xilinx_2022_2/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/vitis_hls'
+INFO: [HLS 200-10] For user 'caccolillo' on host 'caccolillo-OMEN-25L-Desktop-GT12-1xxx' (Linux_x86_64 version 5.15.0-139-generic) on Sun Jun 29 20:13:49 BST 2025
+INFO: [HLS 200-10] On os Ubuntu 20.04.3 LTS
+INFO: [HLS 200-10] In directory '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2'
+Sourcing Tcl script '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj/solution1/csim.tcl'
+INFO: [HLS 200-1510] Running: source /home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj/solution1/csim.tcl
+INFO: [HLS 200-1510] Running: open_project filter2_prj 
+INFO: [HLS 200-10] Opening project '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj'.
+INFO: [HLS 200-1510] Running: set_top filter2 
+INFO: [HLS 200-1510] Running: add_files filter2.h 
+INFO: [HLS 200-10] Adding design file 'filter2.h' to the project
+INFO: [HLS 200-1510] Running: add_files filter2.c 
+INFO: [HLS 200-10] Adding design file 'filter2.c' to the project
+INFO: [HLS 200-1510] Running: add_files -tb filter2_tb.c -cflags -Wno-unknown-pragmas -csimflags -Wno-unknown-pragmas 
+INFO: [HLS 200-10] Adding test bench file 'filter2_tb.c' to the project
+INFO: [HLS 200-1510] Running: open_solution solution1 -flow_target vivado 
+INFO: [HLS 200-10] Opening solution '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj/solution1'.
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xc7a100t-csg324-1'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Resolution: For help on HLS 200-1505 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-1505.html
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+INFO: [HLS 200-1510] Running: set_part xc7a100t-csg324-1 
+INFO: [HLS 200-1510] Running: create_clock -period 10 -name default 
+INFO: [HLS 200-1510] Running: config_export -format ip_catalog -rtl verilog 
+INFO: [HLS 200-1510] Running: source ./filter2_prj/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name filter2 filter2 
+INFO: [HLS 200-1510] Running: csim_design -clean -setup -quiet 
+Running Dispatch Server on port: 40157
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+   Compiling(apcc) ../../../../filter2_tb.c in debug mode
+INFO: [HLS 200-10] Running '/home/caccolillo/Xilinx_2022_2/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/apcc'
+INFO: [HLS 200-10] For user 'caccolillo' on host 'caccolillo-OMEN-25L-Desktop-GT12-1xxx' (Linux_x86_64 version 5.15.0-139-generic) on Sun Jun 29 20:14:02 BST 2025
+INFO: [HLS 200-10] On os Ubuntu 20.04.3 LTS
+INFO: [HLS 200-10] In directory '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is /tmp/apcc_db_caccolillo/291341751224442681758
+INFO: [APCC 202-1] APCC is done.
+INFO: [HLS 200-112] Total CPU user time: 1.06 seconds. Total CPU system time: 0.26 seconds. Total elapsed time: 1.21 seconds; peak allocated memory: 98.984 MB.
+   Compiling(apcc) ../../../../filter2.c in debug mode
+INFO: [HLS 200-10] Running '/home/caccolillo/Xilinx_2022_2/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/apcc'
+INFO: [HLS 200-10] For user 'caccolillo' on host 'caccolillo-OMEN-25L-Desktop-GT12-1xxx' (Linux_x86_64 version 5.15.0-139-generic) on Sun Jun 29 20:14:04 BST 2025
+INFO: [HLS 200-10] On os Ubuntu 20.04.3 LTS
+INFO: [HLS 200-10] In directory '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is /tmp/apcc_db_caccolillo/291921751224444688954
+INFO: [APCC 202-1] APCC is done.
+INFO: [HLS 200-112] Total CPU user time: 1.11 seconds. Total CPU system time: 0.25 seconds. Total elapsed time: 1.25 seconds; peak allocated memory: 98.980 MB.
+   Generating csim.exe
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 3.63 seconds. CPU system time: 0.95 seconds. Elapsed time: 4.34 seconds; current allocated memory: 0.000 MB.
+INFO: [HLS 200-112] Total CPU user time: 5.27 seconds. Total CPU system time: 1.48 seconds. Total elapsed time: 16.42 seconds; peak allocated memory: 756.668 MB.

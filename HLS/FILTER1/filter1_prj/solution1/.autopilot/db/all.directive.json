@@ -1,0 +1,18 @@
+{"sourceFile": [{
+      "name": "",
+      "directive": [{
+          "functionName": "filter1",
+          "label": "",
+          "functionLabel": "",
+          "id": "1",
+          "sourceFile": "\/home\/caccolillo\/Downloads\/TUTORIAL_FSK\/FSK_MODEM\/HLS\/FILTER1\/filter1_prj\/solution1\/csynth.tcl",
+          "sourceLine": "15",
+          "pragma": {
+            "name": "TOP",
+            "option": [{
+                "name": "name",
+                "value": "filter1"
+              }]
+          }
+        }]
+    }]}

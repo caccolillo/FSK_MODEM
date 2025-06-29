@@ -1,0 +1,18 @@
+{"sourceFile": [{
+      "name": "",
+      "directive": [{
+          "functionName": "applyIIRFilter",
+          "label": "",
+          "functionLabel": "",
+          "id": "1",
+          "sourceFile": "\/home\/caccolillo\/Downloads\/TUTORIAL_FSK\/FSK_MODEM\/HLS\/FILTER_ENVELOPE_DETECTOR\/filter_envelope_detector\/solution1\/csynth.tcl",
+          "sourceLine": "15",
+          "pragma": {
+            "name": "TOP",
+            "option": [{
+                "name": "name",
+                "value": "applyIIRFilter"
+              }]
+          }
+        }]
+    }]}

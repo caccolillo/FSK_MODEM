@@ -1,0 +1,66 @@
+INFO: [HLS 200-10] Running '/home/caccolillo/Xilinx_2022_2/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/vitis_hls'
+INFO: [HLS 200-10] For user 'caccolillo' on host 'caccolillo-OMEN-25L-Desktop-GT12-1xxx' (Linux_x86_64 version 5.15.0-139-generic) on Sun Jun 29 20:40:23 BST 2025
+INFO: [HLS 200-10] On os Ubuntu 20.04.3 LTS
+INFO: [HLS 200-10] In directory '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR'
+Sourcing Tcl script '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector/solution1/csim.tcl'
+INFO: [HLS 200-1510] Running: source /home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector/solution1/csim.tcl
+INFO: [HLS 200-1510] Running: open_project filter_envelope_detector 
+INFO: [HLS 200-10] Opening project '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector'.
+INFO: [HLS 200-1510] Running: set_top applyIIRFilter 
+INFO: [HLS 200-1510] Running: add_files filter_envelope_detector.c 
+INFO: [HLS 200-10] Adding design file 'filter_envelope_detector.c' to the project
+INFO: [HLS 200-1510] Running: add_files filter_envelope_detector.h 
+INFO: [HLS 200-10] Adding design file 'filter_envelope_detector.h' to the project
+INFO: [HLS 200-1510] Running: add_files -tb filter_envelope_detector_tb.c 
+INFO: [HLS 200-10] Adding test bench file 'filter_envelope_detector_tb.c' to the project
+INFO: [HLS 200-1510] Running: open_solution solution1 -flow_target vivado 
+INFO: [HLS 200-10] Opening solution '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector/solution1'.
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xc7a100t-csg324-1'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Resolution: For help on HLS 200-1505 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-1505.html
+INFO: [HLS 200-1510] Running: set_part xc7a100tcsg324-1 
+INFO: [HLS 200-1510] Running: create_clock -period 10 -name default 
+INFO: [HLS 200-1510] Running: csim_design -clean -setup -quiet 
+Running Dispatch Server on port: 42141
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+   Compiling(apcc) ../../../../filter_envelope_detector_tb.c in debug mode
+INFO: [HLS 200-10] Running '/home/caccolillo/Xilinx_2022_2/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/apcc'
+INFO: [HLS 200-10] For user 'caccolillo' on host 'caccolillo-OMEN-25L-Desktop-GT12-1xxx' (Linux_x86_64 version 5.15.0-139-generic) on Sun Jun 29 20:40:36 BST 2025
+INFO: [HLS 200-10] On os Ubuntu 20.04.3 LTS
+INFO: [HLS 200-10] In directory '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector/solution1/csim/build'
+../../../../filter_envelope_detector_tb.c:24:26: warning: format specifies type 'double' but the argument has type 'int32_t' (aka 'int') [-Wformat]
+        fprintf(fp, "%d,%f,%f\n", n, input , output );
+                        ~^           ~~~~~
+                        %d
+../../../../filter_envelope_detector_tb.c:24:29: warning: format specifies type 'double' but the argument has type 'int32_t' (aka 'int') [-Wformat]
+        fprintf(fp, "%d,%f,%f\n", n, input , output );
+                           ~^                ~~~~~~
+                           %d
+2 warnings generated.
+../../../../filter_envelope_detector_tb.c:24:26: warning: format specifies type 'double' but the argument has type 'int32_t' (aka 'int') [-Wformat]
+        fprintf(fp, "%d,%f,%f\n", n, input , output );
+                        ~^           ~~~~~
+                        %d
+../../../../filter_envelope_detector_tb.c:24:29: warning: format specifies type 'double' but the argument has type 'int32_t' (aka 'int') [-Wformat]
+        fprintf(fp, "%d,%f,%f\n", n, input , output );
+                           ~^                ~~~~~~
+                           %d
+2 warnings generated.
+INFO: [APCC 202-3] Tmp directory is /tmp/apcc_db_caccolillo/330901751226036585488
+INFO: [APCC 202-1] APCC is done.
+INFO: [HLS 200-112] Total CPU user time: 1.13 seconds. Total CPU system time: 0.2 seconds. Total elapsed time: 1.21 seconds; peak allocated memory: 98.969 MB.
+   Compiling(apcc) ../../../../filter_envelope_detector.c in debug mode
+INFO: [HLS 200-10] Running '/home/caccolillo/Xilinx_2022_2/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/apcc'
+INFO: [HLS 200-10] For user 'caccolillo' on host 'caccolillo-OMEN-25L-Desktop-GT12-1xxx' (Linux_x86_64 version 5.15.0-139-generic) on Sun Jun 29 20:40:38 BST 2025
+INFO: [HLS 200-10] On os Ubuntu 20.04.3 LTS
+INFO: [HLS 200-10] In directory '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is /tmp/apcc_db_caccolillo/331501751226038588033
+INFO: [APCC 202-1] APCC is done.
+INFO: [HLS 200-112] Total CPU user time: 1.11 seconds. Total CPU system time: 0.23 seconds. Total elapsed time: 1.23 seconds; peak allocated memory: 98.965 MB.
+   Generating csim.exe
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 3.74 seconds. CPU system time: 0.84 seconds. Elapsed time: 4.32 seconds; current allocated memory: 0.000 MB.
+INFO: [HLS 200-112] Total CPU user time: 5.41 seconds. Total CPU system time: 1.3 seconds. Total elapsed time: 16.38 seconds; peak allocated memory: 757.047 MB.

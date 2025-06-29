@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "filter1.h"
 
-#define STEP_VALUE   408000  // step height
+#define STEP_VALUE   100000  // step height
 #define NUM_SAMPLES  10000  // Length of step response
 
 int main(void) {

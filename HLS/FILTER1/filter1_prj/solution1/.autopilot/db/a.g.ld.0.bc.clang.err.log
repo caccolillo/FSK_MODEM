@@ -1,0 +1,3 @@
+remark: filter1.c:51:0: Inlining function 'mult32' into 'process_biquad'
+remark: filter1.c:64:0: Inlining function 'mult32' into 'filter1'
+remark: filter1.c:64:0: Inlining function 'process_biquad' into 'filter1'

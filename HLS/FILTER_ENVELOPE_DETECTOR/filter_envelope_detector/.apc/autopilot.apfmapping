@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="filter_envelope_detector.c" path="/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector.c"/>
+    <originFiles name="filter_envelope_detector.h" path="/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector.h"/>
+  </source>
+  <testbench>
+    <originFiles name="filter_envelope_detector_tb.c" path="/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER_ENVELOPE_DETECTOR/filter_envelope_detector_tb.c"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="filter1.c" path="/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER1/filter1.c"/>
+    <originFiles name="filter1.h" path="/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER1/filter1.h"/>
+  </source>
+  <testbench>
+    <originFiles name="filter1_tb.c" path="/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER1/filter1_tb.c"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

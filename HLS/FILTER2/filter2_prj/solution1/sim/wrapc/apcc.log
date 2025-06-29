@@ -1,0 +1,9 @@
+INFO: [HLS 200-10] Running '/home/caccolillo/Xilinx_2022_2/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/apcc'
+INFO: [HLS 200-10] For user 'caccolillo' on host 'caccolillo-OMEN-25L-Desktop-GT12-1xxx' (Linux_x86_64 version 5.15.0-139-generic) on Sun Jun 29 20:03:39 BST 2025
+INFO: [HLS 200-10] On os Ubuntu 20.04.3 LTS
+INFO: [HLS 200-10] In directory '/home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is /tmp/apcc_db_caccolillo/272741751223819776434
+INFO: [APCC 202-1] APCC is done.
+INFO: [HLS 200-112] Total CPU user time: 1.08 seconds. Total CPU system time: 0.24 seconds. Total elapsed time: 1.2 seconds; peak allocated memory: 99.000 MB.
