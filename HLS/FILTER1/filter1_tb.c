@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "iir_filter_fixedpoint.h"
+#include "filter1.h"
 
-#define STEP_VALUE   65535  // step height
+#define STEP_VALUE   408000  // step height
 #define NUM_SAMPLES  10000  // Length of step response
 
 int main(void) {
@@ -20,7 +20,7 @@ int main(void) {
 
     // Apply filter
     for (i = 0; i < NUM_SAMPLES; ++i) {
-        output[i] = iir_filter(input[i]);
+        output[i] = filter1(input[i]);
     }
 
     // Save to CSV

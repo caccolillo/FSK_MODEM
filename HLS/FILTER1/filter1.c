@@ -1,5 +1,5 @@
 // iir_filter.c
-#include "iir_filter_fixedpoint.h"
+#include "filter1.h"
 
 #define MWSPT_NSEC 7
 #define MAX_SECTIONS 3
@@ -61,7 +61,7 @@ static int32_t process_biquad(int section_index, int num_index, int den_index, i
 }
 
 // Process a single input sample
-int32_t iir_filter(int32_t input) {
+int32_t filter1(int32_t input) {
     int32_t x = input;
 
     // Section 1: Gain
