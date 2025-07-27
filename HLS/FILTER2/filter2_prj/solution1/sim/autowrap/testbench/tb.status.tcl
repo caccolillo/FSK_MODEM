@@ -1,1 +1,0 @@
-set ::AESL_AUTOSIM::gTopFileName /home/caccolillo/Downloads/TUTORIAL_FSK/FSK_MODEM/HLS/FILTER2/filter2_prj/solution1/./sim/autowrap/testbench/filter2.c_pre.c.tb.c
