@@ -1,3 +1,0 @@
-filter1_mul_32s_25ns_56_2_1
-filter1_mul_32s_32ns_63_2_1
-filter1
