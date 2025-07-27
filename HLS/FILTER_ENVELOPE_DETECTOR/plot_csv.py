@@ -1,29 +1,26 @@
-import pandas as pd
+import csv
 import matplotlib.pyplot as plt
-import os
 
-# Load CSV safely
-csv_path = "step_response.csv"
-if not os.path.exists(csv_path):
-    raise FileNotFoundError(f"CSV file not found: {csv_path}")
+# Path to your CSV file
+csv_file = 'step_response.csv'
 
-# Read data
-df = pd.read_csv(csv_path)
+samples = []
+output_float = []
 
-# Extract columns
-samples = df["Sample"]
-output_q31 = df["Output_Q31"]
+# Read the CSV file
+with open(csv_file, 'r') as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        samples.append(int(row['Sample']))
+        output_float.append(float(row['Output']))
 
-# Plot Q31 output
-plt.figure(figsize=(10, 5))
-plt.plot(samples, output_q31, marker='o', linestyle='-', color='g', label="Step Response (Q31)")
-
-# Formatting
-plt.title("IIR Filter Step Response (Q31)")
-plt.xlabel("Sample")
-plt.ylabel("Amplitude (Q31 Units)")
+# Plotting
+plt.figure(figsize=(10, 6))
+plt.plot(samples, output_float, marker='o', linestyle='-')
+plt.title('Step Response')
+plt.xlabel('Sample')
+plt.ylabel('Output')
 plt.grid(True)
-plt.legend()
 plt.tight_layout()
 plt.show()
 

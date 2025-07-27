@@ -4,7 +4,6 @@
 
 // Define filter function prototype
 data_type applyIIRFilter(data_type filter_in) ;
-// Q31 step input: full-scale 1.0
 #define STEP_INPUT 3
 #define NUM_SAMPLES 2560
 
@@ -18,7 +17,7 @@ int main() {
         return 0;
     }
 
-    fprintf(fp, "Sample,Output_Q31,Output_Float\n");
+    fprintf(fp, "Sample,Input,Output\n");
 
     for (int n = 0; n < NUM_SAMPLES; ++n) {
         input = STEP_INPUT;

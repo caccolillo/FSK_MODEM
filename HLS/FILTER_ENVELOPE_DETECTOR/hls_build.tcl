@@ -13,5 +13,5 @@ set_part {xc7a100t-csg324-1}
 create_clock -period 10 -name default
 config_export -format ip_catalog -rtl verilog
 csynth_design
-export_design -rtl verilog -format ip_catalog -description "IIR Filter." -vendor "caccolillo" -display_name "IIR"
+export_design -rtl verilog -format ip_catalog -description "IIR Filter." -vendor "caccolillo" -display_name "IIR" -output "../iir_filter.zip"
 exit
