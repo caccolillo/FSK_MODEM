@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "filter1.hpp"
+#include "filter2.hpp"
 
 
-#define STEP_INPUT 3
-#define NUM_SAMPLES 2560
+#define STEP_INPUT 1
+#define NUM_SAMPLES 256000
 
 // Define filter function prototype
 extern data_type filter2(data_type input);
