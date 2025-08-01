@@ -6,7 +6,7 @@ step_samples = []
 step_inputs = []
 step_outputs = []
 
-with open('./band_pass_filter_15k/solution1/csim/build/step_response.csv', 'r') as file:
+with open('./step_response.csv', 'r') as file:
     reader = csv.DictReader(file)
     for row in reader:
         step_samples.append(int(row['Sample']))
@@ -18,7 +18,7 @@ chirp_samples = []
 chirp_inputs = []
 chirp_outputs = []
 
-with open('./band_pass_filter_15k/solution1/csim/build/chirp_response.csv', 'r') as file:
+with open('./chirp_response.csv', 'r') as file:
     reader = csv.DictReader(file)
     for row in reader:
         chirp_samples.append(int(row['Sample']))
