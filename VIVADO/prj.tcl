@@ -69,3 +69,7 @@ make_wrapper -files [get_files ./project_1/project_1.srcs/sources_1/bd/design_1/
 add_files -norecurse ./project_1/project_1.gen/sources_1/bd/design_1/hdl/design_1_wrapper.vhd
 update_compile_order -fileset sources_1
 
+#add waveform configuration file
+add_files -fileset sim_1 -norecurse ./tb_design_1_wrapper_behav.wcfg
+set_property xsim.view ./tb_design_1_wrapper_behav.wcfg [get_filesets sim_1]
+
