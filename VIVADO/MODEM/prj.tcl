@@ -46,7 +46,7 @@ set_property -name "webtalk.xsim_launch_sim" -value "142" -objects $obj
 # Set IP repository paths
 set obj [get_filesets sources_1]
 if { $obj != {} } {
-   set_property "ip_repo_paths" "[file normalize "$origin_dir/../HLS"]" $obj
+   set_property "ip_repo_paths" "[file normalize "$origin_dir/../../"]" $obj
 
    # Rebuild user ip_repo's index before adding any source files
    update_ip_catalog -rebuild
@@ -72,4 +72,15 @@ update_compile_order -fileset sources_1
 #add waveform configuration file
 add_files -fileset sim_1 -norecurse ./tb_design_1_wrapper_behav.wcfg
 set_property xsim.view ./tb_design_1_wrapper_behav.wcfg [get_filesets sim_1]
+
+#package project as an IP-core
+update_compile_order -fileset sources_1
+ipx::package_project -root_dir ./ -vendor user.org -library user -taxonomy /UserIP
+ipx::merge_project_changes hdl_parameters [ipx::current_core]
+set_property core_revision 2 [ipx::current_core]
+ipx::create_xgui_files [ipx::current_core]
+ipx::update_checksums [ipx::current_core]
+ipx::check_integrity [ipx::current_core]
+ipx::save_core [ipx::current_core]
+exit
 
