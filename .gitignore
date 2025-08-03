@@ -6,3 +6,5 @@
 *.png
 *hdlsrc*
 *slprj*
+*.csv
+*band_pass_filter_1*

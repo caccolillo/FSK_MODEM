@@ -12,8 +12,8 @@ echo "Running: vitis_hls hls_build.tcl"
 vitis_hls hls_build.tcl
 
 # Run the second Vitis HLS command
-echo "Running: vitis_hls -p filter_envelope_detector/hls.app"
-vitis_hls -p filter_envelope_detector/hls.app
+#echo "Running: vitis_hls -p filter_envelope_detector/hls.app"
+#vitis_hls -p filter_envelope_detector/hls.app
 
 echo "Vitis HLS build completed successfully."
 

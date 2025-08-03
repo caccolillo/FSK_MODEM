@@ -28,5 +28,8 @@ int main() {
     fclose(fp);
     printf("Step response saved to step_response.csv\n");
     return 0;
+
+    // Run Python plotting script
+    system("python3 ./plot_csv.py");
 }
 

@@ -74,7 +74,7 @@ int main() {
     printf("Chirp response saved to chirp_response.csv\n");
 
     // Run Python plotting script
-    system("python3 ../../../../plot_csv.py");
+    system("python3 ./plot_csv.py");
 
     return 0;
 }
