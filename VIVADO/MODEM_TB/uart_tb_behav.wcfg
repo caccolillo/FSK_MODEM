@@ -10,61 +10,57 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="999,994 ps"></ZoomStartTime>
-      <ZoomEndTime time="1,000,002 ps"></ZoomEndTime>
+      <ZoomStartTime time="0 ps"></ZoomStartTime>
+      <ZoomEndTime time="17 ps"></ZoomEndTime>
       <Cursor1Time time="1,000,000 ps"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="108"></NameColumnWidth>
+      <NameColumnWidth column_width="100"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="12" />
+   <WVObjectSize size="11" />
    <wvobject fp_name="divider11" type="divider">
       <obj_property name="label">TX</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_TX_INST/i_Clk">
-      <obj_property name="ElementShortName">i_Clk</obj_property>
-      <obj_property name="ObjectShortName">i_Clk</obj_property>
+   <wvobject type="logic" fp_name="/uart_tb/uart_tx_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_TX_INST/i_TX_DV">
-      <obj_property name="ElementShortName">i_TX_DV</obj_property>
-      <obj_property name="ObjectShortName">i_TX_DV</obj_property>
+   <wvobject type="logic" fp_name="/uart_tb/uart_tx_inst/tx_start">
+      <obj_property name="ElementShortName">tx_start</obj_property>
+      <obj_property name="ObjectShortName">tx_start</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/uart_tb/UART_TX_INST/i_TX_Byte">
-      <obj_property name="ElementShortName">i_TX_Byte[7:0]</obj_property>
-      <obj_property name="ObjectShortName">i_TX_Byte[7:0]</obj_property>
+   <wvobject type="array" fp_name="/uart_tb/uart_tx_inst/data_in">
+      <obj_property name="ElementShortName">data_in[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[7:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_TX_INST/o_TX_Active">
-      <obj_property name="ElementShortName">o_TX_Active</obj_property>
-      <obj_property name="ObjectShortName">o_TX_Active</obj_property>
+   <wvobject type="logic" fp_name="/uart_tb/uart_tx_inst/tx_line">
+      <obj_property name="ElementShortName">tx_line</obj_property>
+      <obj_property name="ObjectShortName">tx_line</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_TX_INST/o_TX_Serial">
-      <obj_property name="ElementShortName">o_TX_Serial</obj_property>
-      <obj_property name="ObjectShortName">o_TX_Serial</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_TX_INST/o_TX_Done">
-      <obj_property name="ElementShortName">o_TX_Done</obj_property>
-      <obj_property name="ObjectShortName">o_TX_Done</obj_property>
+   <wvobject type="logic" fp_name="/uart_tb/uart_tx_inst/busy">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="divider11" type="divider">
       <obj_property name="label">RX</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_RX_INST/i_Clk">
-      <obj_property name="ElementShortName">i_Clk</obj_property>
-      <obj_property name="ObjectShortName">i_Clk</obj_property>
+   <wvobject type="logic" fp_name="/uart_tb/uart_rx_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_RX_INST/i_RX_Serial">
-      <obj_property name="ElementShortName">i_RX_Serial</obj_property>
-      <obj_property name="ObjectShortName">i_RX_Serial</obj_property>
+   <wvobject type="logic" fp_name="/uart_tb/uart_rx_inst/rx_line">
+      <obj_property name="ElementShortName">rx_line</obj_property>
+      <obj_property name="ObjectShortName">rx_line</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/uart_tb/UART_RX_INST/o_RX_DV">
-      <obj_property name="ElementShortName">o_RX_DV</obj_property>
-      <obj_property name="ObjectShortName">o_RX_DV</obj_property>
+   <wvobject type="array" fp_name="/uart_tb/uart_rx_inst/rx_data">
+      <obj_property name="ElementShortName">rx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_data[7:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/uart_tb/UART_RX_INST/o_RX_Byte">
-      <obj_property name="ElementShortName">o_RX_Byte[7:0]</obj_property>
-      <obj_property name="ObjectShortName">o_RX_Byte[7:0]</obj_property>
+   <wvobject type="logic" fp_name="/uart_tb/uart_rx_inst/rx_valid">
+      <obj_property name="ElementShortName">rx_valid</obj_property>
+      <obj_property name="ObjectShortName">rx_valid</obj_property>
    </wvobject>
 </wave_config>
