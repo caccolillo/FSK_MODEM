@@ -10,7 +10,7 @@ architecture Behavioral of uart_tb is
 
     signal clk       : std_logic := '0';
     signal tx_start  : std_logic := '0';
-    signal tx_data   : std_logic_vector(7 downto 0) := x"55"; -- test pattern
+    signal tx_data   : std_logic_vector(7 downto 0) := x"00"; -- test pattern
     signal tx_line   : std_logic;
     signal rx_data   : std_logic_vector(7 downto 0);
     signal rx_valid  : std_logic;
@@ -120,9 +120,18 @@ begin
     wait for CLK_PERIOD;
     start <= '1';
     
-    -- Wait long enough for transmission to complete (approx 10 bits @ 9600 baud = ~1.04ms)
-    wait for 1.5 ms;
+    
+    for i in 0 to 20 loop
+      wait until rx_valid='1';
+      wait for 230 us;
 
+      tx_start <= '1';
+      wait for CLK_PERIOD;
+      tx_start <= '0';
+      wait for CLK_PERIOD;    
+      tx_data <= std_logic_vector(unsigned(tx_data) + 1);
+      
+    end loop;
 
     wait;
   end process;
