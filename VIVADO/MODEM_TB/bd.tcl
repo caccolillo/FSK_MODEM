@@ -224,19 +224,18 @@ proc create_root_design { parentCell } {
 
   # Create ports
   set FSK_modulated_data [ create_bd_port -dir I -from 31 -to 0 FSK_modulated_data ]
+  set busy_0 [ create_bd_port -dir O busy_0 ]
   set clk [ create_bd_port -dir I -type clk clk ]
   set_property -dict [ list \
    CONFIG.ASSOCIATED_RESET {rst} \
  ] $clk
+  set data_in_0 [ create_bd_port -dir I -from 7 -to 0 data_in_0 ]
   set fsk_modulated_data_out [ create_bd_port -dir O -from 15 -to 0 fsk_modulated_data_out ]
-  set i_TX_Byte [ create_bd_port -dir I -from 7 -to 0 i_TX_Byte ]
-  set i_TX_DV [ create_bd_port -dir I i_TX_DV ]
-  set o_RX_Byte [ create_bd_port -dir O -from 7 -to 0 o_RX_Byte ]
-  set o_RX_DV [ create_bd_port -dir O o_RX_DV ]
-  set o_TX_Active [ create_bd_port -dir O o_TX_Active ]
-  set o_TX_Done [ create_bd_port -dir O o_TX_Done ]
   set rst [ create_bd_port -dir I -type rst rst ]
+  set rx_data_0 [ create_bd_port -dir O -from 7 -to 0 rx_data_0 ]
+  set rx_valid_0 [ create_bd_port -dir O rx_valid_0 ]
   set start [ create_bd_port -dir I start ]
+  set tx_start_0 [ create_bd_port -dir I tx_start_0 ]
 
   # Create instance: UART_RX_0, and set properties
   set block_name UART_RX
@@ -265,18 +264,17 @@ proc create_root_design { parentCell } {
 
   # Create port connections
   connect_bd_net -net FSK_modulated_data_0_1 [get_bd_ports FSK_modulated_data] [get_bd_pins design_1_wrapper_0/FSK_modulated_data]
-  connect_bd_net -net UART_RX_0_o_RX_Byte [get_bd_ports o_RX_Byte] [get_bd_pins UART_RX_0/o_RX_Byte]
-  connect_bd_net -net UART_RX_0_o_RX_DV [get_bd_ports o_RX_DV] [get_bd_pins UART_RX_0/o_RX_DV]
-  connect_bd_net -net UART_TX_0_o_TX_Active [get_bd_ports o_TX_Active] [get_bd_pins UART_TX_0/o_TX_Active]
-  connect_bd_net -net UART_TX_0_o_TX_Done [get_bd_ports o_TX_Done] [get_bd_pins UART_TX_0/o_TX_Done]
-  connect_bd_net -net UART_TX_0_o_TX_Serial [get_bd_pins UART_TX_0/o_TX_Serial] [get_bd_pins design_1_wrapper_0/fsk_binary_modulating_data_in]
-  connect_bd_net -net clk_0_1 [get_bd_ports clk] [get_bd_pins UART_RX_0/i_Clk] [get_bd_pins UART_TX_0/i_Clk] [get_bd_pins design_1_wrapper_0/clk]
-  connect_bd_net -net design_1_wrapper_0_fsk_demodulated_data_out [get_bd_pins UART_RX_0/i_RX_Serial] [get_bd_pins design_1_wrapper_0/fsk_demodulated_data_out]
+  connect_bd_net -net UART_RX_0_rx_data [get_bd_ports rx_data_0] [get_bd_pins UART_RX_0/rx_data]
+  connect_bd_net -net UART_RX_0_rx_valid [get_bd_ports rx_valid_0] [get_bd_pins UART_RX_0/rx_valid]
+  connect_bd_net -net UART_TX_0_busy [get_bd_ports busy_0] [get_bd_pins UART_TX_0/busy]
+  connect_bd_net -net UART_TX_0_o_TX_Serial [get_bd_pins UART_TX_0/tx_line] [get_bd_pins design_1_wrapper_0/fsk_binary_modulating_data_in]
+  connect_bd_net -net clk_0_1 [get_bd_ports clk] [get_bd_pins UART_RX_0/clk] [get_bd_pins UART_TX_0/clk] [get_bd_pins design_1_wrapper_0/clk]
+  connect_bd_net -net data_in_0_1 [get_bd_ports data_in_0] [get_bd_pins UART_TX_0/data_in]
+  connect_bd_net -net design_1_wrapper_0_fsk_demodulated_data_out [get_bd_pins UART_RX_0/rx_line] [get_bd_pins design_1_wrapper_0/fsk_demodulated_data_out]
   connect_bd_net -net design_1_wrapper_0_fsk_modulated_data_out [get_bd_ports fsk_modulated_data_out] [get_bd_pins design_1_wrapper_0/fsk_modulated_data_out]
-  connect_bd_net -net i_TX_Byte_0_1 [get_bd_ports i_TX_Byte] [get_bd_pins UART_TX_0/i_TX_Byte]
-  connect_bd_net -net i_TX_DV_0_1 [get_bd_ports i_TX_DV] [get_bd_pins UART_TX_0/i_TX_DV]
   connect_bd_net -net rst_0_1 [get_bd_ports rst] [get_bd_pins design_1_wrapper_0/rst]
   connect_bd_net -net start_0_1 [get_bd_ports start] [get_bd_pins design_1_wrapper_0/start]
+  connect_bd_net -net tx_start_0_1 [get_bd_ports tx_start_0] [get_bd_pins UART_TX_0/tx_start]
 
   # Create address segments
 
