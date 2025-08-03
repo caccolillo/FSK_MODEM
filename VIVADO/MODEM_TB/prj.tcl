@@ -41,15 +41,31 @@ set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
 set_property -name "webtalk.xsim_export_sim" -value "52" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "142" -objects $obj
 
-
-
 # Set IP repository paths
 set obj [get_filesets sources_1]
 if { $obj != {} } {
-   set_property "ip_repo_paths" "[file normalize "$origin_dir/../HLS"]" $obj
-
+   set_property "ip_repo_paths" "[file normalize "$origin_dir/../../"]" $obj
    # Rebuild user ip_repo's index before adding any source files
    update_ip_catalog -rebuild
 }
 
+#add design sources
+add_files -norecurse {./UART_RX.vhd ./UART_TX.vhd}
+update_compile_order -fileset sources_1
+
+#add simulation sources
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+add_files -fileset sim_1 -norecurse ./UART_TB.vhd
+
+#build block design
+source ./bd.tcl
+
+#create hdl wrapper
+make_wrapper -files [get_files ./project_1/project_1.srcs/sources_1/bd/design_1/design_1.bd] -top
+add_files -norecurse ./project_1/project_1.gen/sources_1/bd/design_1/hdl/design_1_wrapper.vhd
+update_compile_order -fileset sources_1
+
+#add waveform configuration file
+add_files -fileset sim_1 -norecurse ./uart_tb_behav.wcfg
+set_property xsim.view ./uart_tb_behav.wcfg [get_filesets sim_1]
 
