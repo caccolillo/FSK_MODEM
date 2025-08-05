@@ -57,18 +57,6 @@ update_compile_order -fileset sources_1
 set_property SOURCE_SET sources_1 [get_filesets sim_1]
 add_files -fileset sim_1 -norecurse ./UART_TB.vhd
 
-#build block design
-#source ./bd.tcl
-
-#create hdl wrapper
-#make_wrapper -files [get_files ./project_1/project_1.srcs/sources_1/bd/design_1/design_1.bd] -top
-#add_files -norecurse ./project_1/project_1.gen/sources_1/bd/design_1/hdl/design_1_wrapper.vhd
-#update_compile_order -fileset sources_1
-
-#add waveform configuration file
-#add_files -fileset sim_1 -norecurse ./uart_tb_behav.wcfg
-#set_property xsim.view ./uart_tb_behav.wcfg [get_filesets sim_1]
-
 #add IP-core
 update_compile_order -fileset sources_1
 create_ip -name design_1_wrapper -vendor user.org -library user -version 1.0 -module_name design_1_wrapper_0
