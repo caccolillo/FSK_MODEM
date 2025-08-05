@@ -121,9 +121,16 @@ begin
     start <= '1';
     
     
-    for i in 0 to 20 loop
+    for i in 0 to 1024 loop
       wait until rx_valid='1';
       wait for 230 us;
+
+      -- Assert that tx_data = rx_data + 1
+      if not (tx_data = x"00" and rx_data = x"00") then
+        assert unsigned(tx_data) = (unsigned(rx_data) + 1) mod 256
+        report "Mismatch: tx_data /= rx_data + 1 (mod 256)"
+        severity failure;
+      end if;
 
       tx_start <= '1';
       wait for CLK_PERIOD;
@@ -133,7 +140,9 @@ begin
       
     end loop;
 
-    wait;
+    report "End of simulation..."
+        severity failure;
+        
   end process;
 
 end Behavioral;
