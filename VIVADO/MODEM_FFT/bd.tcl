@@ -37,6 +37,13 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # To test this script, run the following commands from Vivado Tcl console:
 # source design_1_script.tcl
 
+
+# The design that will be created by this Tcl script contains the following 
+# module references:
+# find_peak
+
+# Please add the sources of those modules before sourcing this Tcl script.
+
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
 # <./myproj/project_1.xpr> in the current working folder.
@@ -145,6 +152,31 @@ xilinx.com:ip:xfft:9.1\
 
 }
 
+##################################################################
+# CHECK Modules
+##################################################################
+set bCheckModules 1
+if { $bCheckModules == 1 } {
+   set list_check_mods "\ 
+find_peak\
+"
+
+   set list_mods_missing ""
+   common::send_gid_msg -ssname BD::TCL -id 2020 -severity "INFO" "Checking if the following modules exist in the project's sources: $list_check_mods ."
+
+   foreach mod_vlnv $list_check_mods {
+      if { [can_resolve_reference $mod_vlnv] == 0 } {
+         lappend list_mods_missing $mod_vlnv
+      }
+   }
+
+   if { $list_mods_missing ne "" } {
+      catch {common::send_gid_msg -ssname BD::TCL -id 2021 -severity "ERROR" "The following module(s) are not found in the project: $list_mods_missing" }
+      common::send_gid_msg -ssname BD::TCL -id 2022 -severity "INFO" "Please add source files for the missing module(s) above."
+      set bCheckIPsPassed 0
+   }
+}
+
 if { $bCheckIPsPassed != 1 } {
   common::send_gid_msg -ssname BD::TCL -id 2023 -severity "WARNING" "Will not continue with creation of design due to the error(s) above."
   return 3
@@ -189,8 +221,6 @@ proc create_root_design { parentCell } {
 
 
   # Create interface ports
-  set M_AXIS_DATA_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M_AXIS_DATA_0 ]
-
   set S_AXIS_CONFIG_0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS_CONFIG_0 ]
   set_property -dict [ list \
    CONFIG.HAS_TKEEP {0} \
@@ -220,10 +250,10 @@ proc create_root_design { parentCell } {
 
   # Create ports
   set aclk_0 [ create_bd_port -dir I -type clk aclk_0 ]
-  set dout_0 [ create_bd_port -dir O -from 31 -to 0 dout_0 ]
-  set empty_0 [ create_bd_port -dir O empty_0 ]
-  set m_axis_data_tlast_0 [ create_bd_port -dir O m_axis_data_tlast_0 ]
-  set rd_en_0 [ create_bd_port -dir I rd_en_0 ]
+  set_property -dict [ list \
+   CONFIG.ASSOCIATED_BUSIF {S_AXIS_CONFIG_0:S_AXIS_DATA_0} \
+ ] $aclk_0
+  set max_index_0 [ create_bd_port -dir O -from 31 -to 0 max_index_0 ]
 
   # Create instance: fifo_generator_0, and set properties
   set fifo_generator_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:fifo_generator:13.2 fifo_generator_0 ]
@@ -234,6 +264,17 @@ proc create_root_design { parentCell } {
   ] $fifo_generator_0
 
 
+  # Create instance: find_peak_0, and set properties
+  set block_name find_peak
+  set block_cell_name find_peak_0
+  if { [catch {set find_peak_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $find_peak_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: xfft_0, and set properties
   set xfft_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xfft:9.1 xfft_0 ]
   set_property -dict [list \
@@ -247,15 +288,15 @@ proc create_root_design { parentCell } {
   # Create interface connections
   connect_bd_intf_net -intf_net S_AXIS_CONFIG_0_1 [get_bd_intf_ports S_AXIS_CONFIG_0] [get_bd_intf_pins xfft_0/S_AXIS_CONFIG]
   connect_bd_intf_net -intf_net S_AXIS_DATA_0_1 [get_bd_intf_ports S_AXIS_DATA_0] [get_bd_intf_pins xfft_0/S_AXIS_DATA]
-  connect_bd_intf_net -intf_net xfft_0_M_AXIS_DATA [get_bd_intf_ports M_AXIS_DATA_0] [get_bd_intf_pins xfft_0/M_AXIS_DATA]
 
   # Create port connections
-  connect_bd_net -net aclk_0_1 [get_bd_ports aclk_0] [get_bd_pins fifo_generator_0/clk] [get_bd_pins xfft_0/aclk]
-  connect_bd_net -net fifo_generator_0_dout [get_bd_ports dout_0] [get_bd_pins fifo_generator_0/dout]
-  connect_bd_net -net fifo_generator_0_empty [get_bd_ports empty_0] [get_bd_pins fifo_generator_0/empty]
-  connect_bd_net -net rd_en_0_1 [get_bd_ports rd_en_0] [get_bd_pins fifo_generator_0/rd_en]
+  connect_bd_net -net aclk_0_1 [get_bd_ports aclk_0] [get_bd_pins fifo_generator_0/clk] [get_bd_pins find_peak_0/clk] [get_bd_pins xfft_0/aclk]
+  connect_bd_net -net fifo_generator_0_dout [get_bd_pins fifo_generator_0/dout] [get_bd_pins find_peak_0/M_AXIS_DATA_0]
+  connect_bd_net -net fifo_generator_0_empty [get_bd_pins fifo_generator_0/empty] [get_bd_pins find_peak_0/empty_0]
+  connect_bd_net -net find_peak_0_max_index [get_bd_ports max_index_0] [get_bd_pins find_peak_0/max_index]
+  connect_bd_net -net find_peak_0_rd_en_0 [get_bd_pins fifo_generator_0/rd_en] [get_bd_pins find_peak_0/rd_en_0]
   connect_bd_net -net xfft_0_m_axis_data_tdata [get_bd_pins fifo_generator_0/din] [get_bd_pins xfft_0/m_axis_data_tdata]
-  connect_bd_net -net xfft_0_m_axis_data_tlast [get_bd_ports m_axis_data_tlast_0] [get_bd_pins xfft_0/m_axis_data_tlast]
+  connect_bd_net -net xfft_0_m_axis_data_tlast [get_bd_pins find_peak_0/m_axis_data_tlast_0] [get_bd_pins xfft_0/m_axis_data_tlast]
   connect_bd_net -net xfft_0_m_axis_data_tvalid [get_bd_pins fifo_generator_0/wr_en] [get_bd_pins xfft_0/m_axis_data_tvalid]
 
   # Create address segments

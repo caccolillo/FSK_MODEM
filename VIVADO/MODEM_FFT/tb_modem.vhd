@@ -10,26 +10,17 @@ architecture sim of tb_design_1_wrapper is
 
   -- Component Declaration
   component design_1_wrapper
-    port (
-      M_AXIS_DATA_0_tdata : out STD_LOGIC_VECTOR ( 31 downto 0 );
-      M_AXIS_DATA_0_tlast : out STD_LOGIC;
-      M_AXIS_DATA_0_tready : in STD_LOGIC;
-      M_AXIS_DATA_0_tvalid : out STD_LOGIC;
-      S_AXIS_CONFIG_0_tdata : in STD_LOGIC_VECTOR ( 15 downto 0 );
-      S_AXIS_CONFIG_0_tready : out STD_LOGIC;
-      S_AXIS_CONFIG_0_tvalid : in STD_LOGIC;
-      S_AXIS_DATA_0_tdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
-      S_AXIS_DATA_0_tlast : in STD_LOGIC;
-      S_AXIS_DATA_0_tready : out STD_LOGIC;
-      S_AXIS_DATA_0_tvalid : in STD_LOGIC;
-      aclk_0 : in STD_LOGIC;
-      event_data_in_channel_halt_0 : out STD_LOGIC;
-      event_data_out_channel_halt_0 : out STD_LOGIC;
-      event_frame_started_0 : out STD_LOGIC;
-      event_status_channel_halt_0 : out STD_LOGIC;
-      event_tlast_missing_0 : out STD_LOGIC;
-      event_tlast_unexpected_0 : out STD_LOGIC
-    );
+  port (
+    S_AXIS_CONFIG_0_tdata : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    S_AXIS_CONFIG_0_tready : out STD_LOGIC;
+    S_AXIS_CONFIG_0_tvalid : in STD_LOGIC;
+    S_AXIS_DATA_0_tdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    S_AXIS_DATA_0_tlast : in STD_LOGIC;
+    S_AXIS_DATA_0_tready : out STD_LOGIC;
+    S_AXIS_DATA_0_tvalid : in STD_LOGIC;
+    aclk_0 : in STD_LOGIC;
+    max_index_0 : out STD_LOGIC_VECTOR ( 31 downto 0 )
+  );
   end component;
   
   
@@ -130,10 +121,6 @@ begin
    -- UUT instantiation
   design_1_wrapper_inst:design_1_wrapper
     port map(
-      M_AXIS_DATA_0_tdata => open,
-      M_AXIS_DATA_0_tlast => open,
-      M_AXIS_DATA_0_tready => '1',
-      M_AXIS_DATA_0_tvalid => open,
       S_AXIS_CONFIG_0_tdata => x"0000",
       S_AXIS_CONFIG_0_tready => open,
       S_AXIS_CONFIG_0_tvalid => '0',
@@ -142,15 +129,8 @@ begin
       S_AXIS_DATA_0_tready => open,
       S_AXIS_DATA_0_tvalid => en,
       aclk_0 => clk,
-      event_data_in_channel_halt_0 => open,
-      event_data_out_channel_halt_0 => open,
-      event_frame_started_0 => open,
-      event_status_channel_halt_0 => open,
-      event_tlast_missing_0 => open,
-      event_tlast_unexpected_0 => open
+      max_index_0 => open
     );
-
- 
  
     
 end sim;
