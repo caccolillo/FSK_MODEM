@@ -64,7 +64,7 @@ begin
 
   en_proc:process
   begin
-    for i in 0 to 80000 loop
+    for i in 0 to 8000 loop
       wait until rising_edge(clk); 
     end loop;
     en <= '1';
@@ -109,7 +109,7 @@ begin
     
   sinewave_generator_inst:sinewave_generator 
   Port map(
-    clk                 => en,
+    clk                 => clk,
     frequency_setting   => frequency_setting,
     sine_out            => sine_out
   );
@@ -127,7 +127,7 @@ begin
       S_AXIS_DATA_0_tdata => FSK_modulated_data,
       S_AXIS_DATA_0_tlast => '0',
       S_AXIS_DATA_0_tready => open,
-      S_AXIS_DATA_0_tvalid => en,
+      S_AXIS_DATA_0_tvalid => clk,
       aclk_0 => clk,
       max_index_0 => open
     );

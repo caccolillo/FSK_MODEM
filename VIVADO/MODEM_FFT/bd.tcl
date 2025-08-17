@@ -280,8 +280,14 @@ proc create_root_design { parentCell } {
   set_property -dict [list \
     CONFIG.butterfly_type {use_xtremedsp_slices} \
     CONFIG.implementation_options {automatically_select} \
+    CONFIG.input_width {32} \
     CONFIG.number_of_stages_using_block_ram_for_data_and_phase_factors {0} \
-    CONFIG.transform_length {2048} \
+    CONFIG.output_ordering {natural_order} \
+    CONFIG.ovflo {false} \
+    CONFIG.phase_factor_width {32} \
+    CONFIG.rounding_modes {convergent_rounding} \
+    CONFIG.throttle_scheme {realtime} \
+    CONFIG.transform_length {1024} \
   ] $xfft_0
 
 
