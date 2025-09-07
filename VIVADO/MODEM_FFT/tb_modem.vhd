@@ -11,12 +11,7 @@ architecture sim of tb_design_1_wrapper is
   -- Component Declaration
   component design_1_wrapper
   port (
-    S_AXIS_CONFIG_0_tdata : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    S_AXIS_CONFIG_0_tready : out STD_LOGIC;
-    S_AXIS_CONFIG_0_tvalid : in STD_LOGIC;
     S_AXIS_DATA_0_tdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
-    S_AXIS_DATA_0_tlast : in STD_LOGIC;
-    S_AXIS_DATA_0_tready : out STD_LOGIC;
     S_AXIS_DATA_0_tvalid : in STD_LOGIC;
     aclk_0 : in STD_LOGIC;
     max_index_0 : out STD_LOGIC_VECTOR ( 31 downto 0 )
@@ -34,7 +29,8 @@ architecture sim of tb_design_1_wrapper is
   end component;  
 
   -- Signals
-  signal en                                         : std_logic := '0';
+  signal en_lfsr                                    : std_logic := '0';
+  signal en_fsk                                     : std_logic := '0';
   signal clk                                        : std_logic := '0';
   signal rst                                        : std_logic := '1';
   signal start                                      : std_logic := '1';
@@ -62,16 +58,25 @@ begin
     end loop;
   end process;
 
-  en_proc:process
+  en_lfsr_proc:process
   begin
     for i in 0 to 8000 loop
       wait until rising_edge(clk); 
     end loop;
-    en <= '1';
+    en_lfsr <= '1';
     wait until rising_edge(clk); 
-    en <= '0';  
+    en_lfsr <= '0';  
   end process;
 
+  en_fsk_proc:process
+  begin
+    for i in 0 to 16 loop
+      wait until rising_edge(clk); 
+    end loop;
+    en_fsk <= '1';
+    wait until rising_edge(clk); 
+    en_fsk <= '0';  
+  end process;
 
   -- Stimulus process
   stim_proc : process
@@ -97,7 +102,7 @@ begin
       if rst = '1' then
         lfsr_reg <= x"00001000";  -- Reset to non-zero value
       elsif rising_edge(clk) then
-        if(en = '1')then
+        if(en_lfsr = '1')then
           -- Polynomial: x^32 + x^22 + x^2 + x^1 + 1 (tap positions: 32,22,2,1)
           -- Feedback is XOR of taps
           lfsr_reg <= lfsr_reg(30 downto 0) & (lfsr_reg(31) xor lfsr_reg(21) xor lfsr_reg(1) xor lfsr_reg(0));
@@ -121,13 +126,8 @@ begin
    -- UUT instantiation
   design_1_wrapper_inst:design_1_wrapper
     port map(
-      S_AXIS_CONFIG_0_tdata => x"0000",
-      S_AXIS_CONFIG_0_tready => open,
-      S_AXIS_CONFIG_0_tvalid => '0',
       S_AXIS_DATA_0_tdata => FSK_modulated_data,
-      S_AXIS_DATA_0_tlast => '0',
-      S_AXIS_DATA_0_tready => open,
-      S_AXIS_DATA_0_tvalid => clk,
+      S_AXIS_DATA_0_tvalid => '1',
       aclk_0 => clk,
       max_index_0 => open
     );
