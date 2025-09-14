@@ -131,8 +131,13 @@ set bCheckIPsPassed 1
 set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
-xilinx.com:ip:fifo_generator:13.2\
+xilinx.com:ip:c_counter_binary:12.0\
 xilinx.com:ip:xfft:9.1\
+xilinx.com:ip:xlconstant:1.1\
+xilinx.com:ip:c_addsub:12.0\
+xilinx.com:ip:cordic:6.0\
+xilinx.com:ip:mult_gen:12.0\
+xilinx.com:ip:xlslice:1.0\
 "
 
    set list_ips_missing ""
@@ -187,6 +192,124 @@ if { $bCheckIPsPassed != 1 } {
 ##################################################################
 
 
+# Hierarchical cell: FFT_MAGNITUDE_FSK
+proc create_hier_cell_FFT_MAGNITUDE_FSK { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_FFT_MAGNITUDE_FSK() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+
+  # Create pins
+  create_bd_pin -dir I -from 31 -to 0 Din
+  create_bd_pin -dir I -type clk aclk_0
+  create_bd_pin -dir O -from 31 -to 0 m_axis_dout_tdata_0
+  create_bd_pin -dir O m_axis_dout_tvalid_0
+  create_bd_pin -dir I s_axis_cartesian_tvalid_0
+
+  # Create instance: c_addsub_0, and set properties
+  set c_addsub_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:c_addsub:12.0 c_addsub_0 ]
+  set_property -dict [list \
+    CONFIG.A_Width {32} \
+    CONFIG.B_Value {00000000000000000000000000000000} \
+    CONFIG.B_Width {32} \
+    CONFIG.CE {false} \
+    CONFIG.Latency {1} \
+    CONFIG.Out_Width {32} \
+  ] $c_addsub_0
+
+
+  # Create instance: cordic_0, and set properties
+  set cordic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:cordic:6.0 cordic_0 ]
+  set_property -dict [list \
+    CONFIG.Coarse_Rotation {false} \
+    CONFIG.Data_Format {UnsignedFraction} \
+    CONFIG.Functional_Selection {Square_Root} \
+    CONFIG.Input_Width {32} \
+    CONFIG.Output_Width {32} \
+  ] $cordic_0
+
+
+  # Create instance: mult_gen_0, and set properties
+  set mult_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mult_gen:12.0 mult_gen_0 ]
+  set_property -dict [list \
+    CONFIG.PortAType {Signed} \
+    CONFIG.PortAWidth {16} \
+    CONFIG.PortBType {Signed} \
+    CONFIG.PortBWidth {16} \
+  ] $mult_gen_0
+
+
+  # Create instance: mult_gen_1, and set properties
+  set mult_gen_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mult_gen:12.0 mult_gen_1 ]
+  set_property -dict [list \
+    CONFIG.PortAType {Signed} \
+    CONFIG.PortAWidth {16} \
+    CONFIG.PortBType {Signed} \
+    CONFIG.PortBWidth {16} \
+  ] $mult_gen_1
+
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {31} \
+    CONFIG.DIN_TO {16} \
+  ] $xlslice_0
+
+
+  # Create instance: xlslice_1, and set properties
+  set xlslice_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_1 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {15} \
+    CONFIG.DIN_TO {0} \
+  ] $xlslice_1
+
+
+  # Create port connections
+  connect_bd_net -net aclk_0_1 [get_bd_pins aclk_0] [get_bd_pins c_addsub_0/CLK] [get_bd_pins cordic_0/aclk] [get_bd_pins mult_gen_0/CLK] [get_bd_pins mult_gen_1/CLK]
+  connect_bd_net -net c_addsub_0_S [get_bd_pins c_addsub_0/S] [get_bd_pins cordic_0/s_axis_cartesian_tdata]
+  connect_bd_net -net cordic_0_m_axis_dout_tdata [get_bd_pins m_axis_dout_tdata_0] [get_bd_pins cordic_0/m_axis_dout_tdata]
+  connect_bd_net -net cordic_0_m_axis_dout_tvalid [get_bd_pins m_axis_dout_tvalid_0] [get_bd_pins cordic_0/m_axis_dout_tvalid]
+  connect_bd_net -net mult_gen_0_P [get_bd_pins c_addsub_0/B] [get_bd_pins mult_gen_0/P]
+  connect_bd_net -net mult_gen_1_P [get_bd_pins c_addsub_0/A] [get_bd_pins mult_gen_1/P]
+  connect_bd_net -net s_axis_cartesian_tvalid_0_1 [get_bd_pins s_axis_cartesian_tvalid_0] [get_bd_pins cordic_0/s_axis_cartesian_tvalid]
+  connect_bd_net -net xfft_1_m_axis_data_tdata [get_bd_pins Din] [get_bd_pins xlslice_0/Din] [get_bd_pins xlslice_1/Din]
+  connect_bd_net -net xlslice_0_Dout [get_bd_pins mult_gen_0/A] [get_bd_pins mult_gen_0/B] [get_bd_pins xlslice_0/Dout]
+  connect_bd_net -net xlslice_1_Dout [get_bd_pins mult_gen_1/A] [get_bd_pins mult_gen_1/B] [get_bd_pins xlslice_1/Dout]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
@@ -221,47 +344,28 @@ proc create_root_design { parentCell } {
 
 
   # Create interface ports
-  set S_AXIS_CONFIG_0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS_CONFIG_0 ]
-  set_property -dict [ list \
-   CONFIG.HAS_TKEEP {0} \
-   CONFIG.HAS_TLAST {0} \
-   CONFIG.HAS_TREADY {1} \
-   CONFIG.HAS_TSTRB {0} \
-   CONFIG.LAYERED_METADATA {undef} \
-   CONFIG.TDATA_NUM_BYTES {2} \
-   CONFIG.TDEST_WIDTH {0} \
-   CONFIG.TID_WIDTH {0} \
-   CONFIG.TUSER_WIDTH {0} \
-   ] $S_AXIS_CONFIG_0
-
-  set S_AXIS_DATA_0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS_DATA_0 ]
-  set_property -dict [ list \
-   CONFIG.HAS_TKEEP {0} \
-   CONFIG.HAS_TLAST {1} \
-   CONFIG.HAS_TREADY {1} \
-   CONFIG.HAS_TSTRB {0} \
-   CONFIG.LAYERED_METADATA {undef} \
-   CONFIG.TDATA_NUM_BYTES {4} \
-   CONFIG.TDEST_WIDTH {0} \
-   CONFIG.TID_WIDTH {0} \
-   CONFIG.TUSER_WIDTH {0} \
-   ] $S_AXIS_DATA_0
-
 
   # Create ports
-  set aclk_0 [ create_bd_port -dir I -type clk aclk_0 ]
+  set S_AXIS_DATA_0_tdata [ create_bd_port -dir I -from 31 -to 0 S_AXIS_DATA_0_tdata ]
+  set S_AXIS_DATA_0_tvalid [ create_bd_port -dir I -type ce S_AXIS_DATA_0_tvalid ]
   set_property -dict [ list \
-   CONFIG.ASSOCIATED_BUSIF {S_AXIS_CONFIG_0:S_AXIS_DATA_0} \
- ] $aclk_0
+   CONFIG.POLARITY {ACTIVE_HIGH} \
+ ] $S_AXIS_DATA_0_tvalid
+  set aclk_0 [ create_bd_port -dir I -type clk aclk_0 ]
   set max_index_0 [ create_bd_port -dir O -from 31 -to 0 max_index_0 ]
 
-  # Create instance: fifo_generator_0, and set properties
-  set fifo_generator_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:fifo_generator:13.2 fifo_generator_0 ]
+  # Create instance: FFT_MAGNITUDE_FSK
+  create_hier_cell_FFT_MAGNITUDE_FSK [current_bd_instance .] FFT_MAGNITUDE_FSK
+
+  # Create instance: c_counter_binary_0, and set properties
+  set c_counter_binary_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:c_counter_binary:12.0 c_counter_binary_0 ]
   set_property -dict [list \
-    CONFIG.Input_Data_Width {32} \
-    CONFIG.Input_Depth {2048} \
-    CONFIG.Reset_Pin {false} \
-  ] $fifo_generator_0
+    CONFIG.CE {true} \
+    CONFIG.Output_Width {12} \
+    CONFIG.Restrict_Count {false} \
+    CONFIG.Sync_Threshold_Output {true} \
+    CONFIG.Threshold_Value {0} \
+  ] $c_counter_binary_0
 
 
   # Create instance: find_peak_0, and set properties
@@ -275,35 +379,50 @@ proc create_root_design { parentCell } {
      return 1
    }
   
-  # Create instance: xfft_0, and set properties
-  set xfft_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xfft:9.1 xfft_0 ]
+  # Create instance: xfft_FSK_demod, and set properties
+  set xfft_FSK_demod [ create_bd_cell -type ip -vlnv xilinx.com:ip:xfft:9.1 xfft_FSK_demod ]
   set_property -dict [list \
     CONFIG.butterfly_type {use_xtremedsp_slices} \
     CONFIG.implementation_options {automatically_select} \
-    CONFIG.input_width {32} \
-    CONFIG.number_of_stages_using_block_ram_for_data_and_phase_factors {0} \
+    CONFIG.input_width {16} \
+    CONFIG.number_of_stages_using_block_ram_for_data_and_phase_factors {5} \
     CONFIG.output_ordering {natural_order} \
     CONFIG.ovflo {false} \
-    CONFIG.phase_factor_width {32} \
+    CONFIG.phase_factor_width {16} \
     CONFIG.rounding_modes {convergent_rounding} \
-    CONFIG.throttle_scheme {realtime} \
-    CONFIG.transform_length {1024} \
-  ] $xfft_0
+    CONFIG.target_clock_frequency {100} \
+    CONFIG.target_data_throughput {100} \
+    CONFIG.throttle_scheme {nonrealtime} \
+    CONFIG.transform_length {4096} \
+  ] $xfft_FSK_demod
 
 
-  # Create interface connections
-  connect_bd_intf_net -intf_net S_AXIS_CONFIG_0_1 [get_bd_intf_ports S_AXIS_CONFIG_0] [get_bd_intf_pins xfft_0/S_AXIS_CONFIG]
-  connect_bd_intf_net -intf_net S_AXIS_DATA_0_1 [get_bd_intf_ports S_AXIS_DATA_0] [get_bd_intf_pins xfft_0/S_AXIS_DATA]
+  # Create instance: xlconstant_1, and set properties
+  set xlconstant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_1 ]
+  set_property CONFIG.CONST_VAL {0} $xlconstant_1
+
+
+  # Create instance: xlconstant_2, and set properties
+  set xlconstant_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_2 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {16} \
+  ] $xlconstant_2
+
 
   # Create port connections
-  connect_bd_net -net aclk_0_1 [get_bd_ports aclk_0] [get_bd_pins fifo_generator_0/clk] [get_bd_pins find_peak_0/clk] [get_bd_pins xfft_0/aclk]
-  connect_bd_net -net fifo_generator_0_dout [get_bd_pins fifo_generator_0/dout] [get_bd_pins find_peak_0/M_AXIS_DATA_0]
-  connect_bd_net -net fifo_generator_0_empty [get_bd_pins fifo_generator_0/empty] [get_bd_pins find_peak_0/empty_0]
+  connect_bd_net -net CE_0_1 [get_bd_ports S_AXIS_DATA_0_tvalid] [get_bd_pins c_counter_binary_0/CE] [get_bd_pins xfft_FSK_demod/s_axis_data_tvalid]
+  connect_bd_net -net FFT_MAGNITUDE_FSK_M_AXIS_DOUT_0_tdata [get_bd_pins FFT_MAGNITUDE_FSK/m_axis_dout_tdata_0] [get_bd_pins find_peak_0/M_AXIS_DATA_0]
+  connect_bd_net -net FFT_MAGNITUDE_FSK_m_axis_dout_tvalid_0 [get_bd_pins FFT_MAGNITUDE_FSK/m_axis_dout_tvalid_0] [get_bd_pins find_peak_0/m_axis_data_tvalid_0]
+  connect_bd_net -net aclk_0_1 [get_bd_ports aclk_0] [get_bd_pins FFT_MAGNITUDE_FSK/aclk_0] [get_bd_pins c_counter_binary_0/CLK] [get_bd_pins find_peak_0/clk] [get_bd_pins xfft_FSK_demod/aclk]
+  connect_bd_net -net c_counter_binary_0_THRESH0 [get_bd_pins c_counter_binary_0/THRESH0] [get_bd_pins xfft_FSK_demod/s_axis_data_tlast]
   connect_bd_net -net find_peak_0_max_index [get_bd_ports max_index_0] [get_bd_pins find_peak_0/max_index]
-  connect_bd_net -net find_peak_0_rd_en_0 [get_bd_pins fifo_generator_0/rd_en] [get_bd_pins find_peak_0/rd_en_0]
-  connect_bd_net -net xfft_0_m_axis_data_tdata [get_bd_pins fifo_generator_0/din] [get_bd_pins xfft_0/m_axis_data_tdata]
-  connect_bd_net -net xfft_0_m_axis_data_tlast [get_bd_pins find_peak_0/m_axis_data_tlast_0] [get_bd_pins xfft_0/m_axis_data_tlast]
-  connect_bd_net -net xfft_0_m_axis_data_tvalid [get_bd_pins fifo_generator_0/wr_en] [get_bd_pins xfft_0/m_axis_data_tvalid]
+  connect_bd_net -net s_axis_data_tdata_0_1 [get_bd_ports S_AXIS_DATA_0_tdata] [get_bd_pins xfft_FSK_demod/s_axis_data_tdata]
+  connect_bd_net -net xfft_0_m_axis_data_tdata [get_bd_pins FFT_MAGNITUDE_FSK/Din] [get_bd_pins xfft_FSK_demod/m_axis_data_tdata]
+  connect_bd_net -net xfft_FSK_demod_m_axis_data_tlast [get_bd_pins find_peak_0/m_axis_data_tlast_0] [get_bd_pins xfft_FSK_demod/m_axis_data_tlast]
+  connect_bd_net -net xfft_FSK_demod_m_axis_data_tvalid [get_bd_pins FFT_MAGNITUDE_FSK/s_axis_cartesian_tvalid_0] [get_bd_pins xfft_FSK_demod/m_axis_data_tvalid]
+  connect_bd_net -net xlconstant_1_dout [get_bd_pins xfft_FSK_demod/s_axis_config_tvalid] [get_bd_pins xlconstant_1/dout]
+  connect_bd_net -net xlconstant_2_dout [get_bd_pins xfft_FSK_demod/s_axis_config_tdata] [get_bd_pins xlconstant_2/dout]
 
   # Create address segments
 

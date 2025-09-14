@@ -24,7 +24,8 @@ architecture sim of tb_design_1_wrapper is
     Port (
         clk               : in  std_logic;
         frequency_setting : in  std_logic_vector(7 downto 0); -- 8-bit frequency control
-        sine_out          : out std_logic_vector(15 downto 0) -- 16-bit sine wave output
+        sine_out          : out std_logic_vector(15 downto 0); -- 16-bit sine wave output
+        cosine_out        : out std_logic_vector(15 downto 0) -- 16-bit sine wave output
     );
   end component;  
 
@@ -40,6 +41,7 @@ architecture sim of tb_design_1_wrapper is
   signal fsk_modulated_data_out                     : std_logic_vector ( 15 downto 0 );
   signal frequency_setting                          : std_logic_vector(7 downto 0); -- 8-bit frequency control
   signal sine_out                                   : std_logic_vector(15 downto 0); -- 16-bit sine wave output
+  signal cosine_out                                 : std_logic_vector(15 downto 0); -- 16-bit sine wave output
     
   -- Constants
   constant CLK_PERIOD                               : time := 10 ns; -- 100 MHz
@@ -116,10 +118,12 @@ begin
   Port map(
     clk                 => clk,
     frequency_setting   => frequency_setting,
-    sine_out            => sine_out
+    sine_out            => sine_out,
+    cosine_out          => cosine_out
   );
 
-  FSK_modulated_data <= std_logic_vector(resize(unsigned(sine_out(15 downto 3)), 32));
+  --FSK_modulated_data <= std_logic_vector(resize(unsigned(sine_out(15 downto 7)), 16)) & std_logic_vector(resize(unsigned(cosine_out(15 downto 7)), 16));
+  FSK_modulated_data <= sine_out & cosine_out;
  
  
  
