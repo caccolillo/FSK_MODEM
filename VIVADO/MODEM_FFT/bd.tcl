@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# find_peak
+# find_peak, clocked_comparator_25bit
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -134,10 +134,10 @@ if { $bCheckIPs == 1 } {
 xilinx.com:ip:c_counter_binary:12.0\
 xilinx.com:ip:xfft:9.1\
 xilinx.com:ip:xlconstant:1.1\
+xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:c_addsub:12.0\
 xilinx.com:ip:cordic:6.0\
 xilinx.com:ip:mult_gen:12.0\
-xilinx.com:ip:xlslice:1.0\
 "
 
    set list_ips_missing ""
@@ -164,6 +164,7 @@ set bCheckModules 1
 if { $bCheckModules == 1 } {
    set list_check_mods "\ 
 find_peak\
+clocked_comparator_25bit\
 "
 
    set list_mods_missing ""
@@ -310,6 +311,91 @@ proc create_hier_cell_FFT_MAGNITUDE_FSK { parentCell nameHier } {
   current_bd_instance $oldCurInst
 }
 
+# Hierarchical cell: DECISION_LOGIC
+proc create_hier_cell_DECISION_LOGIC { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_DECISION_LOGIC() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+
+  # Create pins
+  create_bd_pin -dir I -from 31 -to 0 Din
+  create_bd_pin -dir I -type clk aclk_0
+  create_bd_pin -dir O received_bit
+
+  # Create instance: clocked_comparator_2_0, and set properties
+  set block_name clocked_comparator_25bit
+  set block_cell_name clocked_comparator_2_0
+  if { [catch {set clocked_comparator_2_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $clocked_comparator_2_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+  set_property CONFIG.CONST_VAL {0} $xlconstant_0
+
+
+  # Create instance: xlconstant_3, and set properties
+  set xlconstant_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_3 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {22} \
+    CONFIG.CONST_WIDTH {25} \
+  ] $xlconstant_3
+
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {24} \
+    CONFIG.DIN_WIDTH {25} \
+  ] $xlslice_0
+
+
+  # Create port connections
+  connect_bd_net -net aclk_0_1 [get_bd_pins aclk_0] [get_bd_pins clocked_comparator_2_0/clk]
+  connect_bd_net -net clocked_comparator_2_0_A_gt_B [get_bd_pins received_bit] [get_bd_pins clocked_comparator_2_0/A_gt_B]
+  connect_bd_net -net find_peak_0_max_index [get_bd_pins Din] [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins clocked_comparator_2_0/reset] [get_bd_pins xlconstant_0/dout]
+  connect_bd_net -net xlconstant_3_dout [get_bd_pins clocked_comparator_2_0/B] [get_bd_pins xlconstant_3/dout]
+  connect_bd_net -net xlslice_0_Dout [get_bd_pins clocked_comparator_2_0/A] [get_bd_pins xlslice_0/Dout]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
@@ -352,7 +438,10 @@ proc create_root_design { parentCell } {
    CONFIG.POLARITY {ACTIVE_HIGH} \
  ] $S_AXIS_DATA_0_tvalid
   set aclk_0 [ create_bd_port -dir I -type clk aclk_0 ]
-  set max_index_0 [ create_bd_port -dir O -from 31 -to 0 max_index_0 ]
+  set received_bit [ create_bd_port -dir O received_bit ]
+
+  # Create instance: DECISION_LOGIC
+  create_hier_cell_DECISION_LOGIC [current_bd_instance .] DECISION_LOGIC
 
   # Create instance: FFT_MAGNITUDE_FSK
   create_hier_cell_FFT_MAGNITUDE_FSK [current_bd_instance .] FFT_MAGNITUDE_FSK
@@ -414,9 +503,10 @@ proc create_root_design { parentCell } {
   connect_bd_net -net CE_0_1 [get_bd_ports S_AXIS_DATA_0_tvalid] [get_bd_pins c_counter_binary_0/CE] [get_bd_pins xfft_FSK_demod/s_axis_data_tvalid]
   connect_bd_net -net FFT_MAGNITUDE_FSK_M_AXIS_DOUT_0_tdata [get_bd_pins FFT_MAGNITUDE_FSK/m_axis_dout_tdata_0] [get_bd_pins find_peak_0/M_AXIS_DATA_0]
   connect_bd_net -net FFT_MAGNITUDE_FSK_m_axis_dout_tvalid_0 [get_bd_pins FFT_MAGNITUDE_FSK/m_axis_dout_tvalid_0] [get_bd_pins find_peak_0/m_axis_data_tvalid_0]
-  connect_bd_net -net aclk_0_1 [get_bd_ports aclk_0] [get_bd_pins FFT_MAGNITUDE_FSK/aclk_0] [get_bd_pins c_counter_binary_0/CLK] [get_bd_pins find_peak_0/clk] [get_bd_pins xfft_FSK_demod/aclk]
+  connect_bd_net -net aclk_0_1 [get_bd_ports aclk_0] [get_bd_pins DECISION_LOGIC/aclk_0] [get_bd_pins FFT_MAGNITUDE_FSK/aclk_0] [get_bd_pins c_counter_binary_0/CLK] [get_bd_pins find_peak_0/clk] [get_bd_pins xfft_FSK_demod/aclk]
   connect_bd_net -net c_counter_binary_0_THRESH0 [get_bd_pins c_counter_binary_0/THRESH0] [get_bd_pins xfft_FSK_demod/s_axis_data_tlast]
-  connect_bd_net -net find_peak_0_max_index [get_bd_ports max_index_0] [get_bd_pins find_peak_0/max_index]
+  connect_bd_net -net clocked_comparator_2_0_A_gt_B [get_bd_ports received_bit] [get_bd_pins DECISION_LOGIC/received_bit]
+  connect_bd_net -net find_peak_0_max_index [get_bd_pins DECISION_LOGIC/Din] [get_bd_pins find_peak_0/max_index]
   connect_bd_net -net s_axis_data_tdata_0_1 [get_bd_ports S_AXIS_DATA_0_tdata] [get_bd_pins xfft_FSK_demod/s_axis_data_tdata]
   connect_bd_net -net xfft_0_m_axis_data_tdata [get_bd_pins FFT_MAGNITUDE_FSK/Din] [get_bd_pins xfft_FSK_demod/m_axis_data_tdata]
   connect_bd_net -net xfft_FSK_demod_m_axis_data_tlast [get_bd_pins find_peak_0/m_axis_data_tlast_0] [get_bd_pins xfft_FSK_demod/m_axis_data_tlast]

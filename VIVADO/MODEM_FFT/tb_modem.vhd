@@ -14,7 +14,7 @@ architecture sim of tb_design_1_wrapper is
     S_AXIS_DATA_0_tdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
     S_AXIS_DATA_0_tvalid : in STD_LOGIC;
     aclk_0 : in STD_LOGIC;
-    max_index_0 : out STD_LOGIC_VECTOR ( 31 downto 0 )
+    received_bit : out STD_LOGIC    
   );
   end component;
   
@@ -62,7 +62,7 @@ begin
 
   en_lfsr_proc:process
   begin
-    for i in 0 to 8000 loop
+    for i in 0 to 32000 loop  --64000 32000
       wait until rising_edge(clk); 
     end loop;
     en_lfsr <= '1';
@@ -92,9 +92,7 @@ begin
     -- Reset active for first 50 clock cycles
     wait for CLK_PERIOD * 50;
     rst <= '0';
-
     wait for CLK_PERIOD;
-
     wait; -- End simulation
   end process;
 
@@ -102,7 +100,7 @@ begin
   process(clk, rst)
     begin
       if rst = '1' then
-        lfsr_reg <= x"00001000";  -- Reset to non-zero value
+        lfsr_reg <= x"f1ff1ff1";  -- Reset to non-zero value
       elsif rising_edge(clk) then
         if(en_lfsr = '1')then
           -- Polynomial: x^32 + x^22 + x^2 + x^1 + 1 (tap positions: 32,22,2,1)
@@ -133,7 +131,7 @@ begin
       S_AXIS_DATA_0_tdata => FSK_modulated_data,
       S_AXIS_DATA_0_tvalid => '1',
       aclk_0 => clk,
-      max_index_0 => open
+      received_bit => open
     );
  
     
